@@ -16,7 +16,11 @@ errors.txt
 cert/
 *.perm
 *.json
+!webui/frontend/package.json
 !webui/frontend/package-lock.json
+!webui/frontend/tsconfig.json
+!webui/frontend/tsconfig.app.json
+!webui/frontend/tsconfig.node.json
 *.env
 contracts/*
 ._*
