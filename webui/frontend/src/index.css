@@ -1,0 +1,56 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply antialiased;
+  }
+}
+
+@layer components {
+  .card {
+    @apply bg-white rounded-xl border border-gray-100 shadow-sm
+           dark:bg-gray-900 dark:border-gray-800;
+  }
+  .card-hover {
+    @apply card transition-all duration-200
+           hover:shadow-md hover:border-gray-200 hover:-translate-y-0.5
+           dark:hover:border-gray-700 dark:hover:shadow-gray-900/40;
+  }
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 px-4 py-2 text-sm font-medium rounded-lg
+           bg-indigo-600 text-white hover:bg-indigo-700 active:bg-indigo-800
+           transition-colors disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+  .btn-secondary {
+    @apply inline-flex items-center justify-center gap-2 px-4 py-2 text-sm font-medium rounded-lg
+           bg-white text-gray-700 border border-gray-200 hover:bg-gray-50 active:bg-gray-100
+           dark:bg-gray-800 dark:text-gray-300 dark:border-gray-700 dark:hover:bg-gray-700 dark:active:bg-gray-700
+           transition-colors;
+  }
+  .btn-danger {
+    @apply inline-flex items-center justify-center gap-2 px-4 py-2 text-sm font-medium rounded-lg
+           bg-red-600 text-white hover:bg-red-700 active:bg-red-800 transition-colors;
+  }
+  .btn-ghost {
+    @apply inline-flex items-center justify-center gap-2 px-3 py-1.5 text-xs font-medium rounded-md
+           text-gray-600 hover:bg-gray-100 active:bg-gray-200
+           dark:text-gray-400 dark:hover:bg-gray-800 dark:active:bg-gray-700
+           transition-colors;
+  }
+  .input {
+    @apply w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm
+           text-gray-900 placeholder-gray-400
+           focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500
+           dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100 dark:placeholder-gray-500
+           dark:focus:ring-indigo-400/20 dark:focus:border-indigo-400
+           transition-colors;
+  }
+  .label {
+    @apply block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5;
+  }
+  .page-title {
+    @apply text-2xl font-semibold text-gray-900 dark:text-gray-100 tracking-tight;
+  }
+}
