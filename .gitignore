@@ -16,6 +16,7 @@ errors.txt
 cert/
 *.perm
 *.json
+!webui/frontend/package-lock.json
 *.env
 contracts/*
 ._*

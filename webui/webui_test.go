@@ -16,7 +16,7 @@ import (
 
 func TestWebUIStartStop(t *testing.T) {
 	pool := newTestPool(":6379")
-	ns := "work"
+	ns := "webuitest"
 	cleanKeyspace(ns, pool)
 
 	s := NewServer(ns, pool, ":6666")
@@ -28,7 +28,7 @@ type TestContext struct{}
 
 func TestWebUIQueues(t *testing.T) {
 	pool := newTestPool(":6379")
-	ns := "work"
+	ns := "webuitest"
 	cleanKeyspace(ns, pool)
 
 	// Get some stuff to to show up in the jobs:
@@ -84,7 +84,7 @@ func TestWebUIQueues(t *testing.T) {
 
 func TestWebUIWorkerPools(t *testing.T) {
 	pool := newTestPool(":6379")
-	ns := "work"
+	ns := "webuitest"
 	cleanKeyspace(ns, pool)
 
 	wp := work.NewWorkerPool(TestContext{}, 10, ns, pool)
@@ -121,7 +121,7 @@ func TestWebUIWorkerPools(t *testing.T) {
 
 func TestWebUIBusyWorkers(t *testing.T) {
 	pool := newTestPool(":6379")
-	ns := "work"
+	ns := "webuitest"
 	cleanKeyspace(ns, pool)
 
 	// Keep a job in the in-progress state without using sleeps
@@ -183,7 +183,7 @@ func TestWebUIBusyWorkers(t *testing.T) {
 
 func TestWebUIRetryJobs(t *testing.T) {
 	pool := newTestPool(":6379")
-	ns := "work"
+	ns := "webuitest"
 	cleanKeyspace(ns, pool)
 
 	enqueuer := work.NewEnqueuer(ns, pool)
