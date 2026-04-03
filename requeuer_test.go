@@ -65,17 +65,13 @@ func TestRequeueUnknown(t *testing.T) {
 	nowish := nowEpochSeconds()
 	setNowEpochSecondsMock(nowish)
 
+	// Requeuer that does NOT know about "wat" should skip it,
+	// leaving it in the scheduled set for another requeuer.
 	re := newRequeuer(ns, pool, redisKeyScheduled(ns), []string{"bar"})
 	re.start()
 	re.drain()
 	re.stop()
 
-	assert.EqualValues(t, 0, zsetSize(pool, redisKeyScheduled(ns)))
-	assert.EqualValues(t, 1, zsetSize(pool, redisKeyDead(ns)))
-
-	rank, job := jobOnZset(pool, redisKeyDead(ns))
-
-	assert.Equal(t, nowish, rank)
-	assert.Equal(t, nowish, job.FailedAt)
-	assert.Equal(t, "unknown job when requeueing", job.LastErr)
+	assert.EqualValues(t, 1, zsetSize(pool, redisKeyScheduled(ns)))
+	assert.EqualValues(t, 0, zsetSize(pool, redisKeyDead(ns)))
 }
