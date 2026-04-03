@@ -20,11 +20,12 @@ type WorkerPool struct {
 	pool          *redis.Pool
 	sleepBackoffs []int64
 
-	contextType  reflect.Type
-	jobTypes     map[string]*jobType
-	middleware   []*middlewareHandler
-	started      bool
-	periodicJobs []*periodicJob
+	contextType    reflect.Type
+	jobTypes       map[string]*jobType
+	knownJobNames  []string // extra names the requeuer should recognise (but workers won't fetch from)
+	middleware     []*middlewareHandler
+	started        bool
+	periodicJobs   []*periodicJob
 
 	workers          []*worker
 	heartbeater      *workerPoolHeartbeater
@@ -177,6 +178,16 @@ func (wp *WorkerPool) JobWithOptions(name string, jobOpts JobOptions, fn interfa
 	return wp
 }
 
+// AddKnownJobNames registers job names that the requeuer (scheduler/retrier)
+// should recognise when moving delayed jobs into their work queues. Unlike Job
+// or JobWithOptions, these names are NOT added to the workers' fetch list, so
+// this pool will never consume jobs from those queues. Use this when a process
+// enqueues delayed jobs that are handled by a different worker pool instance.
+func (wp *WorkerPool) AddKnownJobNames(names ...string) *WorkerPool {
+	wp.knownJobNames = append(wp.knownJobNames, names...)
+	return wp
+}
+
 // PeriodicallyEnqueue will periodically enqueue jobName according to the cron-based spec.
 // The spec format is based on https://godoc.org/github.com/robfig/cron, which is a relatively standard cron format.
 // Note that the first value is the seconds!
@@ -277,10 +288,11 @@ func (wp *WorkerPool) Drain() {
 }
 
 func (wp *WorkerPool) startRequeuers() {
-	jobNames := make([]string, 0, len(wp.jobTypes))
+	jobNames := make([]string, 0, len(wp.jobTypes)+len(wp.knownJobNames))
 	for k := range wp.jobTypes {
 		jobNames = append(jobNames, k)
 	}
+	jobNames = append(jobNames, wp.knownJobNames...)
 	wp.retrier = newRequeuer(wp.namespace, wp.pool, redisKeyRetry(wp.namespace), jobNames)
 	wp.scheduler = newRequeuer(wp.namespace, wp.pool, redisKeyScheduled(wp.namespace), jobNames)
 	wp.deadPoolReaper = newDeadPoolReaper(wp.namespace, wp.pool, jobNames)
