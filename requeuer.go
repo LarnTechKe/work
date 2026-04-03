@@ -1,7 +1,6 @@
 package work
 
 import (
-	"fmt"
 	"time"
 
 	"github.com/gomodule/redigo/redis"
@@ -100,9 +99,9 @@ func (r *requeuer) process() bool {
 
 	if res == "" {
 		return false
-	} else if res == "dead" {
-		logError("requeuer.process.dead", fmt.Errorf("no job name"))
-		return true
+	} else if res == "skip" {
+		// Job belongs to a different worker pool; leave it in the queue.
+		return false
 	} else if res == "ok" {
 		return true
 	}
